@@ -86,63 +86,53 @@ def run_brand_survey():
         return True
 
     q = st.session_state.brand_questions[i]
+    st.markdown(f"<h3 style='text-align:center;'>Brand Question {i + 1} of 30</h3>", unsafe_allow_html=True)
 
+    st.markdown("---")
+    ref_imgs = "".join([f"<img src='{url}' width='80' style='margin: 4px; border-radius: 6px;'/>" for url in q['reference']['Images']])
     st.markdown(f"""
-        <div style='text-align:center;'>
-            <h3>Brand Question {i + 1} of 30</h3>
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown("<hr style='margin-top:0; margin-bottom:20px;'>", unsafe_allow_html=True)
-
-    # Reference block
-    ref_imgs = "".join([
-        f"<img src='{url}' style='height: 90px; margin: 4px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'/>"
-        for url in q['reference']['Images']
-    ])
-    st.markdown(f"""
-        <div style='text-align: center; margin-bottom: 16px; max-width: 85%; 
-                    margin-left:auto; margin-right:auto; padding: 16px;
-                    border-radius: 8px;'>
-            <h4 style='margin-bottom:8px;'>Reference Brand: {q['reference']['Brand']}</h4>
-            <p style='color:#555; margin-top:0;'><strong>Average Price:</strong> ${q['reference']['Price']}</p>
-            {ref_imgs}
-        </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<hr style='margin:20px 0;'>", unsafe_allow_html=True)
-    st.markdown(f"<h4 style='text-align:center; margin-bottom:20px;'>Which brand is more similar to {q['reference']['Brand']}?</h4>", unsafe_allow_html=True)
+    <div style='text-align: center;'>
+        <h3>Reference Brand: {q['reference']['Brand']}</h3>
+        <p><strong>Median Price:</strong> ${q['reference']['Price']}</p>
+        {ref_imgs}
+    </div>""", unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown(f"<h4 style='text-align:center;'>Which brand is more similar to {q['reference']['Brand']}?</h4>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     for col, key in zip([col1, col2], ['a', 'b']):
         with col:
-            imgs = "".join([
-                f"<img src='{url}' style='height: 90px; margin:4px; border-radius:6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'/>"
-                for url in q[key]['Images']
-            ])
-
-            # Brand card
+            imgs = "".join([f"<img src='{url}' width='90' style='margin:4px; border-radius:6px;'/>" for url in q[key]['Images']])
             st.markdown(f"""
-                <div style='padding: 16px;
-                            border-radius: 8px; margin-bottom: 12px; text-align: center;'>
-                    <h4 style='margin-bottom: 8px;'>{q[key]['Brand']}</h4>
-                    <p style='color:#555; margin-top:0;'><strong>Average Price:</strong> ${q[key]['Price']}</p>
+            <div style='display: flex; flex-direction: column; justify-content: space-between; height: 300px; padding: 16px; border: 2px solid #ccc; border-radius: 12px; text-align: center;'>
+                <div>
+                    <h4>{q[key]['Brand']}</h4>
+                    <p><strong>Median Price:</strong> ${q[key]['Price']}</p>
                     {imgs}
                 </div>
-            """, unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
 
-            # Centered button
-            st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-            if st.button(f"Select {q[key]['Brand']}", key=f"{key}_{i}", use_container_width=True, type="secondary"):
-                st.session_state.brand_responses.append({
-                    "question": i + 1,
-                    "reference": q["reference"]["Brand"],
-                    "selected": q[key]["Brand"],
-                    "other": q["a"]["Brand"] if key == "b" else q["b"]["Brand"]
-                })
-                st.session_state.brand_index += 1
-                st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
+    # Button row (aligned with respective brand)
+    col1b, col2b = st.columns(2)
+    if col1b.button(f"Select {q['a']['Brand']}", key=f"a_{i}"):
+        st.session_state.brand_responses.append({
+            "question": i + 1,
+            "reference": q["reference"]["Brand"],
+            "selected": q["a"]["Brand"],
+            "other": q["b"]["Brand"]
+        })
+        st.session_state.brand_index += 1
+        st.rerun()
+
+    if col2b.button(f"Select {q['b']['Brand']}", key=f"b_{i}"):
+        st.session_state.brand_responses.append({
+            "question": i + 1,
+            "reference": q["reference"]["Brand"],
+            "selected": q["b"]["Brand"],
+            "other": q["a"]["Brand"]
+        })
+        st.session_state.brand_index += 1
+        st.rerun()
 
     return False
-
 
