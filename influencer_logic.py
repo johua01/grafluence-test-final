@@ -80,14 +80,14 @@ def run_influencer_survey():
     """, unsafe_allow_html=True)
     st.markdown("<hr style='margin-top:0; margin-bottom:20px;'>", unsafe_allow_html=True)
 
-    # Reference Block with shaded background
+    # Reference Block with shaded background (no category)
     st.markdown(f"""
         <div style='text-align:center; margin-bottom: 16px; max-width: 85%; 
                     margin-left:auto; margin-right:auto; padding: 16px;
                     background-color: rgba(235, 235, 235, 0.7);
                     border-radius: 8px;'>
             <h4 style='margin-bottom:8px;'>Reference: @{ref_info['name']}</h4>
-            <p style='color:#555; margin-top:0;'>{ref_info['followers']:,} followers &nbsp;|&nbsp; <strong>Category:</strong> {ref_info['category']}</p>
+            <p style='color:#555; margin-top:0;'>{ref_info['followers']:,} followers</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -113,7 +113,7 @@ def run_influencer_survey():
     col1, col2 = st.columns(2)
     for col, key, info in zip([col1, col2], ['a', 'b'], [a_info, b_info]):
         with col:
-            # Option container with matching background
+            # Option container (no category shown)
             st.markdown(f"""
                 <div style='padding: 16px; margin-bottom: 12px; 
                             background-color: rgba(235, 235, 235, 0.7);
@@ -121,7 +121,7 @@ def run_influencer_survey():
                             text-align: center;'>
                     <div style='margin-bottom: 12px;'>
                         <strong style='font-size: 16px;'>@{info['name']}</strong><br/>
-                        <p style='color:#555; margin-top:0; margin-bottom:0;'>{info['followers']:,} followers &nbsp;|&nbsp; <strong>Category:</strong> {info['category']}</p>
+                        <p style='color:#555; margin-top:0; margin-bottom:0;'>{info['followers']:,} followers</p>
                     </div>
             """, unsafe_allow_html=True)
 
